@@ -31,7 +31,7 @@ namespace Stenford.Service.Report
                                                 (!showroomId.HasValue || v.ShowroomId == showroomId) &&
                                                 (!cityId.HasValue || showroom.CityId == cityId) &&
                                                 (!fromDate.HasValue || v.VisitDate >= fromDate) &&
-                                                (!toDate.HasValue || v.VisitDate <= toDate)
+                                                (!toDate.HasValue || v.VisitDate < toDate.Value.Date.AddDays(1))
                                                 group v by new { showroom.ShowroomId, showroom.ShowroomName, city.CityName } into g
                                                 select new ReportRowDTO
                                                 {
@@ -54,7 +54,7 @@ namespace Stenford.Service.Report
                                    (!showroomId.HasValue || v.ShowroomId == showroomId) &&
                                    (!cityId.HasValue || showroom.CityId == cityId) &&
                                    (!fromDate.HasValue || v.VisitDate >= fromDate) &&
-                                   (!toDate.HasValue || v.VisitDate <= toDate)
+                                   (!toDate.HasValue || v.VisitDate < toDate.Value.Date.AddDays(1))
                                    select v).Count();
 
                 var showroomCount = (from v in _context.VisVisits
@@ -63,7 +63,7 @@ namespace Stenford.Service.Report
                                      (!showroomId.HasValue || v.ShowroomId == showroomId) &&
                                      (!cityId.HasValue || showroom.CityId == cityId) &&
                                      (!fromDate.HasValue || v.VisitDate >= fromDate) &&
-                                     (!toDate.HasValue || v.VisitDate <= toDate)
+                                     (!toDate.HasValue || v.VisitDate < toDate.Value.Date.AddDays(1))
                                      select v.ShowroomId).Distinct().Count();
 
                 var stateCount = (from v in _context.VisVisits
@@ -72,7 +72,7 @@ namespace Stenford.Service.Report
                                   (!showroomId.HasValue || v.ShowroomId == showroomId) &&
                                   (!cityId.HasValue || showroom.CityId == cityId) &&
                                   (!fromDate.HasValue || v.VisitDate >= fromDate) &&
-                                  (!toDate.HasValue || v.VisitDate <= toDate)
+                                  (!toDate.HasValue || v.VisitDate < toDate.Value.Date.AddDays(1))
                                   select showroom.StateId).Distinct().Count();
 
                 // Step 1: Figure out the START date

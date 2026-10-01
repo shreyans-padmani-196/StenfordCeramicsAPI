@@ -58,6 +58,12 @@ public partial class ShoShowroom
 
     public Guid? DeletedBy { get; set; }
 
+    [Precision(10, 8)]
+    public decimal? Latitude { get; set; }
+
+    [Precision(11, 8)]
+    public decimal? Longitude { get; set; }
+
     [ForeignKey("CityId")]
     [InverseProperty("ShoShowrooms")]
     public virtual LocCity City { get; set; } = null!;

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Stenford.Common.Utility;
 using Stenford.Domain.DataContext;
 using Stenford.Service.Account;
 using Stenford.Service.Dashboard;
@@ -103,6 +104,14 @@ if (jwtKey != null)
     });
 }
 //default scheme ends----------------------------------------------
+
+builder.Services.AddHttpClient<IMapLinkParser, GoogleMapLinkParser>(c =>
+{
+    c.Timeout = TimeSpan.FromSeconds(10);
+    c.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0");
+})
+.ConfigurePrimaryHttpMessageHandler(() => new HttpClientHandler { AllowAutoRedirect = false });
+
 
 var app = builder.Build();
 

@@ -36,7 +36,7 @@ namespace Stenford.Service.Visit
 											   (!cityId.HasValue || showroom.CityId == cityId) &&
 											   (!salesPersonId.HasValue || v.SalesPersonId == salesPersonId) &&
 											   (!fromDate.HasValue || v.VisitDate >= fromDate) &&
-											   (!toDate.HasValue || v.VisitDate <= toDate)
+											   (!toDate.HasValue || v.VisitDate < toDate.Value.Date.AddDays(1))
 											   orderby v.VisitDate descending
 											   select new VisitDTO
 											   {
@@ -87,10 +87,12 @@ namespace Stenford.Service.Visit
 							 SalesPersonName = sp.SalesPersonName,
 							 VisitDate = v.VisitDate,
 							 DiscussionNotes = v.DiscussionNotes,
-							 //Products = v.ProductsDiscussedString.Split("@#$%^&**&^%$#@", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries).ToList(),
-							 Latitude = v.Latitude,
-							 Longitude = v.Longitude,
-							 VoiceNotePath = CommonHelper.GetFullImagePath(v.VoiceNotePath),
+                             //Products = v.ProductsDiscussedString.Split("@#$%^&**&^%$#@", StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries).ToList(),
+                             //Latitude = v.Latitude,
+                             //Longitude = v.Longitude,
+                             Latitude = showroom.Latitude ?? v.Latitude,
+                             Longitude = showroom.Longitude ?? v.Longitude,
+                             VoiceNotePath = CommonHelper.GetFullImagePath(v.VoiceNotePath),
 							 VisitingCardFrontPath = CommonHelper.GetFullImagePath(v.VisitingCardFrontPath),
 							 VisitingCardBackPath = CommonHelper.GetFullImagePath(v.VisitingCardBackPath),
 						 }).FirstOrDefault();
@@ -125,13 +127,15 @@ namespace Stenford.Service.Visit
 											(!cityId.HasValue || showroom.CityId == cityId) &&
 											(!salesPersonId.HasValue || v.SalesPersonId == salesPersonId) &&
 											(!fromDate.HasValue || v.VisitDate >= fromDate) &&
-											(!toDate.HasValue || v.VisitDate <= toDate)
+											(!toDate.HasValue || v.VisitDate < toDate.Value.Date.AddDays(1))
 									  select new VisitMapPointDTO
 									  {
 										  VisitId = v.VisitId,
-										  Latitude = v.Latitude,
-										  Longitude = v.Longitude,
-										  SalesPersonId = sp.SalesPersonId,
+                                          //Latitude = v.Latitude,
+                                          //Longitude = v.Longitude,
+                                          Latitude = showroom.Latitude ?? v.Latitude,      // 👈 Use showroom location first
+                                          Longitude = showroom.Longitude ?? v.Longitude,
+                                          SalesPersonId = sp.SalesPersonId,
 										  SalesPersonName = sp.SalesPersonName
 									  }).ToList();
 
@@ -286,7 +290,7 @@ namespace Stenford.Service.Visit
                                            where v.IsDeleted != true &&
                                            v.SalesPersonId == salesPersonId &&
                                            (!fromDate.HasValue || v.VisitDate >= fromDate) &&
-                                           (!toDate.HasValue || v.VisitDate <= toDate)
+                                           (!toDate.HasValue || v.VisitDate < toDate.Value.Date.AddDays(1))
                                            orderby v.VisitDate descending
                                            select new VisitDTO
                                            {

@@ -27,8 +27,10 @@ namespace StenfordAPI.Controllers
 		[Route("list")]
 		public BaseResponse GetShowroomList([FromQuery] string? searchText, [FromQuery] int? pageNumber, [FromQuery] int? pageSize, [FromQuery] int? stateId, [FromQuery] int? cityId)
 		{
-			try
-			{
+            string? token = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Replace("Bearer ", "");
+
+            try
+            {
 				if (!pageNumber.HasValue || !pageSize.HasValue)
 				{
 					return ApiMessage(Enums.StatusCode.BadRequest, ConstantMessage.PageNumberAndPageSizeRequired);
@@ -39,7 +41,9 @@ namespace StenfordAPI.Controllers
 					return ApiMessage(Enums.StatusCode.BadRequest, ConstantMessage.InvalidPageNumberOrPageSize);
 				}
 
-				var showroomList = _showroomRepository.GetShowroomDataList(searchText, pageNumber.Value, pageSize.Value, stateId, cityId).ToModel();
+                var aspNetUserId = Guid.Parse(CV.AspNetUserId(token));
+
+                var showroomList = _showroomRepository.GetShowroomDataList(searchText, pageNumber.Value, pageSize.Value, stateId, cityId, aspNetUserId).ToModel();
 				return (showroomList.Any()) ? ApiSuccess(Enums.StatusCode.Ok, ConstantMessage.ShowroomListFetched, showroomList, showroomList.First().TotalRecords) : ApiSuccess(Enums.StatusCode.Ok, "Showroom List Empty!", new List<int>());
 			}
 			catch (Exception ex)
@@ -55,7 +59,11 @@ namespace StenfordAPI.Controllers
             string? token = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Replace("Bearer ", "");
             try
 			{
-				var dto = model.ToModel();
+                if (!string.IsNullOrEmpty(model.SecondaryContact) && model.PrimaryContact?.Trim() == model.SecondaryContact?.Trim())
+                {
+                    return ApiMessage(Enums.StatusCode.BadRequest, ConstantMessage.ContactNumbersCannotBeSame);
+                }
+                var dto = model.ToModel();
 				var result = _showroomRepository.AddShowroom(dto, Guid.Parse(CV.AspNetUserId(token)));
 				//var result = _showroomRepository.AddShowroom(dto, Guid.Parse("11111111-1111-1111-1111-111111111111"));
                 return ApiSuccess(Enums.StatusCode.Ok, ConstantMessage.ShowroomAdded, result.ToModel());
@@ -73,7 +81,11 @@ namespace StenfordAPI.Controllers
             string? token = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Replace("Bearer ", "");
             try
 			{
-				var dto = model.ToModel();
+                if (!string.IsNullOrEmpty(model.SecondaryContact) && model.PrimaryContact?.Trim() == model.SecondaryContact?.Trim())
+                {
+                    return ApiMessage(Enums.StatusCode.BadRequest, ConstantMessage.ContactNumbersCannotBeSame);
+                }
+                var dto = model.ToModel();
 				var result = _showroomRepository.EditShowroom(dto, Guid.Parse(CV.AspNetUserId(token)));
 				//var result = _showroomRepository.EditShowroom(dto, Guid.Parse("11111111-1111-1111-1111-111111111111"));
 				return (result != null) ? ApiSuccess(Enums.StatusCode.Ok, ConstantMessage.ShowroomUpdated, result.ToModel()) : ApiMessage(Enums.StatusCode.NotFound, ConstantMessage.ShowroomNotFound);
