@@ -225,12 +225,12 @@ namespace Stenford.Service.SalesPerson
         //	return _context.SecSalesPeople.Any(x => x.SalesPersonName.ToLower() == salesPersonName.ToLower() && x.IsDeleted == false);
         //}
 
-        public bool IsSalesPersonNameExists(string salesPersonName, int? excludeSalesPersonId = null)
-        {
-            return _context.SecSalesPeople.Any(x => x.SalesPersonName.ToLower() == salesPersonName.ToLower()
-                && x.IsDeleted == false
-                && (!excludeSalesPersonId.HasValue || x.SalesPersonId != excludeSalesPersonId));
-        }
+        //public bool IsSalesPersonNameExists(string salesPersonName, int? excludeSalesPersonId = null)
+        //{
+        //    return _context.SecSalesPeople.Any(x => x.SalesPersonName.ToLower() == salesPersonName.ToLower()
+        //        && x.IsDeleted == false
+        //        && (!excludeSalesPersonId.HasValue || x.SalesPersonId != excludeSalesPersonId));
+        //}
 
         public bool DeleteSalesPerson(int salesPersonId, string aspnetUserId)
 		{
@@ -284,8 +284,15 @@ namespace Stenford.Service.SalesPerson
 				.ToList();
 
 			salesPerson.TotalVisits = visits.Count;
-			salesPerson.ShowroomCount = visits.Select(v => v.ShowroomId).Distinct().Count();
-			salesPerson.ThisMonthVisits = visits.Count(v => v.VisitDate.Month == DateTime.Now.Month && v.VisitDate.Year == DateTime.Now.Year);
+            var aspNetUserId = _context.SecSalesPeople
+    .Where(sp => sp.SalesPersonId == salesPersonId)
+    .Select(sp => sp.AspNetUserId)
+    .FirstOrDefault();
+            salesPerson.ShowroomCount = _context.ShoShowrooms
+                .Count(s => s.CreatedBy == aspNetUserId && s.IsDeleted == false);
+            //salesPerson.ShowroomCount = visits.Select(v => v.ShowroomId).Distinct().Count();
+
+            salesPerson.ThisMonthVisits = visits.Count(v => v.VisitDate.Month == DateTime.Now.Month && v.VisitDate.Year == DateTime.Now.Year);
 
 			salesPerson.VisitTimeline = (from v in _context.VisVisits
 										 join showroom in _context.ShoShowrooms on v.ShowroomId equals showroom.ShowroomId

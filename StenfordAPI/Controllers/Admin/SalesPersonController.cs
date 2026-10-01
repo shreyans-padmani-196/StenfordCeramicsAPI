@@ -62,11 +62,15 @@ namespace StenfordAPI.Controllers.Admin
             string? token = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Replace("Bearer ", "");
             try
 			{
-				if (_salesPersonRepository.IsSalesPersonNameExists(model.SalesPersonName))
-				{
-					return ApiMessage(Enums.StatusCode.BadRequest, ConstantMessage.SalesPersonNameAlreadyExists);
-				}
-				var dto = model.ToModel();
+                if (!string.IsNullOrEmpty(model.SecondaryContact) && model.PrimaryContact?.Trim() == model.SecondaryContact?.Trim())
+                {
+                    return ApiMessage(Enums.StatusCode.BadRequest, ConstantMessage.ContactNumbersCannotBeSame);
+                }
+                //if (_salesPersonRepository.IsSalesPersonNameExists(model.SalesPersonName))
+                //{
+                //	return ApiMessage(Enums.StatusCode.BadRequest, ConstantMessage.SalesPersonNameAlreadyExists);
+                //}
+                var dto = model.ToModel();
 				dto.Password = StringUtility.EncryptString(model.Password);
 
                 var result = _salesPersonRepository.AddSalesPerson(dto, CV.AspNetUserId(token));
@@ -107,10 +111,14 @@ namespace StenfordAPI.Controllers.Admin
             string? token = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Replace("Bearer ", "");
             try
             {
-                if (_salesPersonRepository.IsSalesPersonNameExists(model.SalesPersonName, model.SalesPersonId))
+                if (!string.IsNullOrEmpty(model.SecondaryContact) && model.PrimaryContact?.Trim() == model.SecondaryContact?.Trim())
                 {
-                    return ApiMessage(Enums.StatusCode.BadRequest, ConstantMessage.SalesPersonNameAlreadyExists);
+                    return ApiMessage(Enums.StatusCode.BadRequest, ConstantMessage.ContactNumbersCannotBeSame);
                 }
+                //if (_salesPersonRepository.IsSalesPersonNameExists(model.SalesPersonName, model.SalesPersonId))
+                //{
+                //    return ApiMessage(Enums.StatusCode.BadRequest, ConstantMessage.SalesPersonNameAlreadyExists);
+                //}
 
                 var dto = model.ToModel();
                 if (!string.IsNullOrEmpty(model.Password))

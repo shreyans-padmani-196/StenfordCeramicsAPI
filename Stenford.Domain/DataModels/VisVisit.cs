@@ -30,7 +30,7 @@ public partial class VisVisit
 
     public string DiscussionNotes { get; set; } = null!;
 
-    public string? ProductsDiscussedString { get; set; } = null!;
+    public string? ProductsDiscussedString { get; set; }
 
     public bool IsDeleted { get; set; }
 

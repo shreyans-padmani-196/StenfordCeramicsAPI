@@ -10,7 +10,7 @@ namespace Stenford.Service.Showroom
 {
 	public interface IShowroomRepository
 	{
-		List<ShowroomDTO> GetShowroomDataList(string searchText, int pageIndex, int pageSize, int? stateId, int? cityId);
+		List<ShowroomDTO> GetShowroomDataList(string searchText, int pageIndex, int pageSize, int? stateId, int? cityId, Guid aspNetUserId);
 
 		ShowroomDTO AddShowroom(ShowroomDTO showroomDTO, Guid aspnetUserId);
 

@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static Stenford.Domain.DTO;
 
-namespace Stenford.Service.Account
+namespace Stenford.Service.Account  
 {
     public class AccountRepository : IAccountRepository
     {
@@ -56,7 +56,7 @@ namespace Stenford.Service.Account
                 };
             }
 
-            var salesPerson = _context.SecSalesPeople.FirstOrDefault(sp => sp.AspNetUserId == aspNetUserId && sp.IsDeleted == false);
+            var salesPerson = _context.SecSalesPeople.FirstOrDefault(sp => sp.AspNetUserId == aspNetUserId && sp.IsDeleted == false && sp.IsActive == true);
             if (salesPerson != null)
             {
                 return new UserJwtDTO
@@ -130,7 +130,8 @@ namespace Stenford.Service.Account
 
                 var visits = _context.VisVisits.Where(v => v.SalesPersonId == salesPerson.SalesPersonID && v.IsDeleted == false).ToList();
                 salesPerson.TotalVisits = visits.Count;
-                salesPerson.ShowroomCount = visits.Select(v => v.ShowroomId).Distinct().Count();
+                //salesPerson.ShowroomCount = visits.Select(v => v.ShowroomId).Distinct().Count();
+                salesPerson.ShowroomCount = _context.ShoShowrooms.Count(s => s.CreatedBy == aspNetUserId && s.IsDeleted == false);
                 salesPerson.ThisMonthVisits = visits.Count(v => v.VisitDate.Month == DateTime.Now.Month && v.VisitDate.Year == DateTime.Now.Year);
 
                 return salesPerson;

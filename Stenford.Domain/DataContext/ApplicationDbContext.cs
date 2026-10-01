@@ -40,9 +40,9 @@ public partial class ApplicationDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        //=> optionsBuilder.UseNpgsql("User ID=postgres;Password=0507;Server=localhost;Port=5432;Database=Stenford_DB;Pooling=true;");
-        => optionsBuilder.UseNpgsql("User ID=stedfordceramic_user;Password=StendfordCeramic@111!!!;Server=168.231.120.235;Port=5432;Database=StenfordCeramicsAPP_DB;Pooling=true;");
-    //=> optionsBuilder.UseNpgsql("User ID=postgres_user;Password=rahulshah;Server=13.204.88.241;Port=5432;Database=StenfordCeramicsDB;Pooling=true;");
+        => optionsBuilder.UseNpgsql("User ID=postgres;Password=0507;Server=localhost;Port=5432;Database=Stenford_DB;Pooling=true;");
+        //=> optionsBuilder.UseNpgsql("User ID=stedfordceramic_user;Password=StendfordCeramic@111!!!;Server=168.231.120.235;Port=5432;Database=StenfordCeramicsAPP_DB;Pooling=true;");
+
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -77,5 +77,8 @@ namespace Stenford.Common.Constants
         public const string ReportFetched = "Report data fetched successfully.";
 
         public const string SalesPersonEmailAlreadyExists = "A sales person with this email already exists.";
+
+        public const string ContactNumbersCannotBeSame = "Primary and secondary contact numbers cannot be the same.";
+
     }
 }
